@@ -1,0 +1,383 @@
+{
+  "name": "УчетКафе",
+  "synonym": "Учёт кафе",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "Меню",
+      "synonym": "Меню",
+      "content": [
+        "Справочник.КатегорииБлюд",
+        "Справочник.Блюда",
+        "РегистрСведений.ЦеныБлюд",
+        "Документ.ЗакрытиеЗаказа",
+        "Отчет.ПродажиБлюд",
+        "Отчет.ВыручкаПоОфициантам",
+        "Отчет.ЗанятостьСтоликов"
+      ]
+    },
+    {
+      "name": "Заказы",
+      "synonym": "Заказы",
+      "content": [
+        "Справочник.Столики",
+        "Справочник.Официанты",
+        "Документ.ЗаказКлиента"
+      ]
+    },
+    {
+      "name": "Продажи",
+      "synonym": "Продажи",
+      "content": [
+        "РегистрНакопления.ПродажиБлюд",
+        "РегистрНакопления.ВыручкаПоОфициантам",
+        "РегистрНакопления.ЗанятостьСтоликов"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "СпособыОплаты",
+      "synonym": "Способы оплаты",
+      "values": [
+        "Наличные",
+        "Карта"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "КатегорииБлюд",
+      "synonym": "Категории блюд",
+      "hierarchical": true,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Блюда",
+      "synonym": "Блюда",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Категория",
+          "synonym": "Категория",
+          "type": "СправочникСсылка.КатегорииБлюд",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Столики",
+      "synonym": "Столики",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Официанты",
+      "synonym": "Официанты",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ЗаказКлиента",
+      "synonym": "Заказ клиента",
+      "attributes": [
+        {
+          "name": "Столик",
+          "synonym": "Столик",
+          "type": "СправочникСсылка.Столики",
+          "required": true
+        },
+        {
+          "name": "Официант",
+          "synonym": "Официант",
+          "type": "СправочникСсылка.Официанты",
+          "required": true
+        },
+        {
+          "name": "СпособОплаты",
+          "synonym": "Способ оплаты",
+          "type": "ПеречислениеСсылка.СпособыОплаты",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Блюда",
+          "synonym": "Блюда",
+          "attributes": [
+            {
+              "name": "Блюдо",
+              "synonym": "Блюдо",
+              "type": "СправочникСсылка.Блюда",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(10,3)",
+              "required": true
+            },
+            {
+              "name": "Цена",
+              "synonym": "Цена",
+              "type": "Число(15,2)",
+              "required": true
+            },
+            {
+              "name": "Сумма",
+              "synonym": "Сумма",
+              "type": "Число(15,2)",
+              "required": false
+            }
+          ],
+          "computed": [
+            {
+              "field": "Сумма",
+              "expression": "Количество * Цена"
+            }
+          ]
+        }
+      ],
+      "movements": [
+        {
+          "register": "ПродажиБлюд",
+          "kind": null,
+          "table": "Блюда",
+          "fields": [
+            {
+              "target": "Блюдо",
+              "source": "Блюда.Блюдо"
+            },
+            {
+              "target": "Официант",
+              "source": "Официант"
+            },
+            {
+              "target": "Сумма",
+              "source": "Блюда.Сумма"
+            }
+          ],
+          "check_balance": false
+        },
+        {
+          "register": "ВыручкаПоОфициантам",
+          "kind": null,
+          "table": "Блюда",
+          "fields": [
+            {
+              "target": "Официант",
+              "source": "Официант"
+            },
+            {
+              "target": "Сумма",
+              "source": "Блюда.Сумма"
+            }
+          ],
+          "check_balance": false
+        },
+        {
+          "register": "ЗанятостьСтоликов",
+          "kind": "Приход",
+          "table": null,
+          "fields": [
+            {
+              "target": "Столик",
+              "source": "Столик"
+            },
+            {
+              "target": "Количество",
+              "source": "1"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "ЗакрытиеЗаказа",
+      "synonym": "Закрытие заказа",
+      "attributes": [
+        {
+          "name": "Заказ",
+          "synonym": "Заказ",
+          "type": "ДокументСсылка.ЗаказКлиента",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "ЗанятостьСтоликов",
+          "kind": "Расход",
+          "table": null,
+          "fields": [
+            {
+              "target": "Столик",
+              "source": "Заказ.Столик"
+            },
+            {
+              "target": "Количество",
+              "source": "1"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [
+    {
+      "name": "ЦеныБлюд",
+      "synonym": "Цены блюд",
+      "periodicity": "День",
+      "recorder": false,
+      "dimensions": [
+        {
+          "name": "Блюдо",
+          "synonym": "Блюдо",
+          "type": "СправочникСсылка.Блюда",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Цена",
+          "synonym": "Цена",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "accumulation_registers": [
+    {
+      "name": "ПродажиБлюд",
+      "synonym": "Продажи блюд",
+      "kind": "Обороты",
+      "dimensions": [
+        {
+          "name": "Блюдо",
+          "synonym": "Блюдо",
+          "type": "СправочникСсылка.Блюда",
+          "required": false
+        },
+        {
+          "name": "Официант",
+          "synonym": "Официант",
+          "type": "СправочникСсылка.Официанты",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    },
+    {
+      "name": "ВыручкаПоОфициантам",
+      "synonym": "Выручка по официантам",
+      "kind": "Обороты",
+      "dimensions": [
+        {
+          "name": "Официант",
+          "synonym": "Официант",
+          "type": "СправочникСсылка.Официанты",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    },
+    {
+      "name": "ЗанятостьСтоликов",
+      "synonym": "Занятость столиков",
+      "kind": "Остатки",
+      "dimensions": [
+        {
+          "name": "Столик",
+          "synonym": "Столик",
+          "type": "СправочникСсылка.Столики",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Количество",
+          "synonym": "Количество",
+          "type": "Число(10)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "ПродажиБлюд",
+      "synonym": "Продажи блюд",
+      "source": "РегистрНакопления.ПродажиБлюд",
+      "view": "Обороты",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    },
+    {
+      "name": "ВыручкаПоОфициантам",
+      "synonym": "Выручка по официантам",
+      "source": "РегистрНакопления.ВыручкаПоОфициантам",
+      "view": "Обороты",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    },
+    {
+      "name": "ЗанятостьСтоликов",
+      "synonym": "Занятость столиков",
+      "source": "РегистрНакопления.ЗанятостьСтоликов",
+      "view": "Остатки",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    }
+  ]
+}

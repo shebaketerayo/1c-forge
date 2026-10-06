@@ -1,0 +1,545 @@
+{
+  "name": "СервисныйЦентр",
+  "synonym": "Сервисный центр",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "Клиенты",
+      "synonym": "Клиенты",
+      "content": [
+        "Справочник.Клиенты",
+        "Справочник.Устройства",
+        "Отчет.ОстаткиЗапчастей",
+        "Отчет.ВыручкаСервиса",
+        "Документ.ПоступлениеЗапчастей",
+        "РегистрСведений.СтатусыУстройств"
+      ]
+    },
+    {
+      "name": "Склад",
+      "synonym": "Склад",
+      "content": [
+        "Справочник.Запчасти"
+      ]
+    },
+    {
+      "name": "Ремонт",
+      "synonym": "Ремонт",
+      "content": [
+        "Справочник.Мастера",
+        "Справочник.Услуги",
+        "Документ.ПриемкаВРемонт",
+        "Документ.ВыполнениеРемонта",
+        "Документ.ВыдачаУстройства"
+      ]
+    },
+    {
+      "name": "Отчетность",
+      "synonym": "Отчетность",
+      "content": [
+        "РегистрНакопления.ОстаткиЗапчастей",
+        "Отчет.УстройстваВРемонте",
+        "РегистрНакопления.ВыручкаСервиса"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "СтатусыРемонта",
+      "synonym": "Статусы ремонта",
+      "values": [
+        "ВРаботе",
+        "Готов",
+        "Выдан",
+        "Отказ"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "Клиенты",
+      "synonym": "Клиенты",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "КонтактныеДанные",
+          "synonym": "Контактные данные",
+          "type": "Строка(255)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Устройства",
+      "synonym": "Устройства",
+      "hierarchical": false,
+      "owner": "Клиенты",
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Тип",
+          "synonym": "Тип",
+          "type": "Строка(50)",
+          "required": false
+        },
+        {
+          "name": "Модель",
+          "synonym": "Модель",
+          "type": "Строка(50)",
+          "required": false
+        },
+        {
+          "name": "СерийныйНомер",
+          "synonym": "Серийный номер",
+          "type": "Строка(50)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Запчасти",
+      "synonym": "Запчасти",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Артикул",
+          "synonym": "Артикул",
+          "type": "Строка(20)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Услуги",
+      "synonym": "Услуги",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Цена",
+          "synonym": "Цена",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Мастера",
+      "synonym": "Мастера",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Должность",
+          "synonym": "Должность",
+          "type": "Строка(50)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ПриемкаВРемонт",
+      "synonym": "Приемка ВРемонт",
+      "attributes": [
+        {
+          "name": "Клиент",
+          "synonym": "Клиент",
+          "type": "СправочникСсылка.Клиенты",
+          "required": true
+        },
+        {
+          "name": "Устройство",
+          "synonym": "Устройство",
+          "type": "СправочникСсылка.Устройства",
+          "required": true
+        },
+        {
+          "name": "Мастер",
+          "synonym": "Мастер",
+          "type": "СправочникСсылка.Мастера",
+          "required": true
+        },
+        {
+          "name": "Статус",
+          "synonym": "Статус",
+          "type": "ПеречислениеСсылка.СтатусыРемонта",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "СтатусыУстройств",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Устройство",
+              "source": "Устройство"
+            },
+            {
+              "target": "Статус",
+              "source": "Перечисления.СтатусыРемонта.ВРаботе"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "ВыполнениеРемонта",
+      "synonym": "Выполнение ремонта",
+      "attributes": [
+        {
+          "name": "Устройство",
+          "synonym": "Устройство",
+          "type": "СправочникСсылка.Устройства",
+          "required": true
+        },
+        {
+          "name": "Мастер",
+          "synonym": "Мастер",
+          "type": "СправочникСсылка.Мастера",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Услуги",
+          "synonym": "Услуги",
+          "attributes": [
+            {
+              "name": "Услуга",
+              "synonym": "Услуга",
+              "type": "СправочникСсылка.Услуги",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(10)",
+              "required": true
+            },
+            {
+              "name": "Цена",
+              "synonym": "Цена",
+              "type": "Число(15,2)",
+              "required": true
+            },
+            {
+              "name": "Сумма",
+              "synonym": "Сумма",
+              "type": "Число(15,2)",
+              "required": false
+            }
+          ],
+          "computed": [
+            {
+              "field": "Сумма",
+              "expression": "Количество * Цена"
+            }
+          ]
+        },
+        {
+          "name": "Запчасти",
+          "synonym": "Запчасти",
+          "attributes": [
+            {
+              "name": "Запчасть",
+              "synonym": "Запчасть",
+              "type": "СправочникСсылка.Запчасти",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(10)",
+              "required": true
+            }
+          ],
+          "computed": []
+        }
+      ],
+      "movements": [
+        {
+          "register": "СтатусыУстройств",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Устройство",
+              "source": "Устройство"
+            },
+            {
+              "target": "Статус",
+              "source": "Перечисления.СтатусыРемонта.Готов"
+            }
+          ],
+          "check_balance": false
+        },
+        {
+          "register": "ОстаткиЗапчастей",
+          "kind": "Расход",
+          "table": "Запчасти",
+          "fields": [
+            {
+              "target": "Запчасть",
+              "source": "Запчасти.Запчасть"
+            },
+            {
+              "target": "Количество",
+              "source": "Запчасти.Количество"
+            }
+          ],
+          "check_balance": true
+        },
+        {
+          "register": "ВыручкаСервиса",
+          "kind": null,
+          "table": "Услуги",
+          "fields": [
+            {
+              "target": "Мастер",
+              "source": "Мастер"
+            },
+            {
+              "target": "Услуга",
+              "source": "Услуги.Услуга"
+            },
+            {
+              "target": "Сумма",
+              "source": "Услуги.Сумма"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "ВыдачаУстройства",
+      "synonym": "Выдача устройства",
+      "attributes": [
+        {
+          "name": "Устройство",
+          "synonym": "Устройство",
+          "type": "СправочникСсылка.Устройства",
+          "required": true
+        },
+        {
+          "name": "Клиент",
+          "synonym": "Клиент",
+          "type": "СправочникСсылка.Клиенты",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "СтатусыУстройств",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Устройство",
+              "source": "Устройство"
+            },
+            {
+              "target": "Статус",
+              "source": "Перечисления.СтатусыРемонта.Выдан"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "ПоступлениеЗапчастей",
+      "synonym": "Поступление запчастей",
+      "attributes": [
+        {
+          "name": "Склад",
+          "synonym": "Склад",
+          "type": "СправочникСсылка.Запчасти",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Запчасти",
+          "synonym": "Запчасти",
+          "attributes": [
+            {
+              "name": "Запчасть",
+              "synonym": "Запчасть",
+              "type": "СправочникСсылка.Запчасти",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(10)",
+              "required": true
+            }
+          ],
+          "computed": []
+        }
+      ],
+      "movements": [
+        {
+          "register": "ОстаткиЗапчастей",
+          "kind": "Приход",
+          "table": "Запчасти",
+          "fields": [
+            {
+              "target": "Запчасть",
+              "source": "Запчасти.Запчасть"
+            },
+            {
+              "target": "Количество",
+              "source": "Запчасти.Количество"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [
+    {
+      "name": "СтатусыУстройств",
+      "synonym": "Статусы устройств",
+      "periodicity": "Секунда",
+      "recorder": true,
+      "dimensions": [
+        {
+          "name": "Устройство",
+          "synonym": "Устройство",
+          "type": "СправочникСсылка.Устройства",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Статус",
+          "synonym": "Статус",
+          "type": "ПеречислениеСсылка.СтатусыРемонта",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "accumulation_registers": [
+    {
+      "name": "ОстаткиЗапчастей",
+      "synonym": "Остатки запчастей",
+      "kind": "Остатки",
+      "dimensions": [
+        {
+          "name": "Запчасть",
+          "synonym": "Запчасть",
+          "type": "СправочникСсылка.Запчасти",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Количество",
+          "synonym": "Количество",
+          "type": "Число(15,3)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    },
+    {
+      "name": "ВыручкаСервиса",
+      "synonym": "Выручка сервиса",
+      "kind": "Обороты",
+      "dimensions": [
+        {
+          "name": "Мастер",
+          "synonym": "Мастер",
+          "type": "СправочникСсылка.Мастера",
+          "required": false
+        },
+        {
+          "name": "Услуга",
+          "synonym": "Услуга",
+          "type": "СправочникСсылка.Услуги",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "ОстаткиЗапчастей",
+      "synonym": "Остатки запчастей",
+      "source": "РегистрНакопления.ОстаткиЗапчастей",
+      "view": "Остатки",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    },
+    {
+      "name": "УстройстваВРемонте",
+      "synonym": "Устройства ВРемонте",
+      "source": "РегистрСведений.СтатусыУстройств",
+      "view": "СрезПоследних",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    },
+    {
+      "name": "ВыручкаСервиса",
+      "synonym": "Выручка сервиса",
+      "source": "РегистрНакопления.ВыручкаСервиса",
+      "view": "Обороты",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    }
+  ]
+}

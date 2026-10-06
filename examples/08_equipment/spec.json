@@ -1,0 +1,327 @@
+{
+  "name": "УчетОборудования",
+  "synonym": "Учёт оборудования",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "УчетОборудования",
+      "synonym": "Учет оборудования",
+      "content": [
+        "Справочник.Оборудование",
+        "Справочник.МестаУстановки",
+        "Справочник.Сотрудники",
+        "Документ.ВводВЭксплуатацию",
+        "Документ.ПеремещениеОборудования",
+        "Документ.СписаниеОборудования",
+        "Отчет.ВедомостьОборудования",
+        "РегистрСведений.МестонахождениеОборудования"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "СостоянияОборудования",
+      "synonym": "Состояния оборудования",
+      "values": [
+        "ВЭксплуатации",
+        "ВРемонте",
+        "Списано"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "Оборудование",
+      "synonym": "Оборудование",
+      "hierarchical": true,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "ИнвентарныйНомер",
+          "synonym": "Инвентарный номер",
+          "type": "Строка(50)",
+          "required": true
+        },
+        {
+          "name": "СерийныйНомер",
+          "synonym": "Серийный номер",
+          "type": "Строка(50)",
+          "required": false
+        },
+        {
+          "name": "ДатаВвода",
+          "synonym": "Дата ввода",
+          "type": "Дата",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "МестаУстановки",
+      "synonym": "Места установки",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Сотрудники",
+      "synonym": "Сотрудники",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ВводВЭксплуатацию",
+      "synonym": "Ввод ВЭксплуатацию",
+      "attributes": [
+        {
+          "name": "Оборудование",
+          "synonym": "Оборудование",
+          "type": "СправочникСсылка.Оборудование",
+          "required": true
+        },
+        {
+          "name": "МестоУстановки",
+          "synonym": "Место установки",
+          "type": "СправочникСсылка.МестаУстановки",
+          "required": true
+        },
+        {
+          "name": "Ответственный",
+          "synonym": "Ответственный",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "МестонахождениеОборудования",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Оборудование",
+              "source": "Оборудование"
+            },
+            {
+              "target": "МестоУстановки",
+              "source": "МестоУстановки"
+            },
+            {
+              "target": "Ответственный",
+              "source": "Ответственный"
+            },
+            {
+              "target": "Количество",
+              "source": "1"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "ПеремещениеОборудования",
+      "synonym": "Перемещение оборудования",
+      "attributes": [
+        {
+          "name": "Оборудование",
+          "synonym": "Оборудование",
+          "type": "СправочникСсылка.Оборудование",
+          "required": true
+        },
+        {
+          "name": "МестоОтправитель",
+          "synonym": "Место отправитель",
+          "type": "СправочникСсылка.МестаУстановки",
+          "required": true
+        },
+        {
+          "name": "МестоПолучатель",
+          "synonym": "Место получатель",
+          "type": "СправочникСсылка.МестаУстановки",
+          "required": true
+        },
+        {
+          "name": "НовыйОтветственный",
+          "synonym": "Новый ответственный",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "МестонахождениеОборудования",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Оборудование",
+              "source": "Оборудование"
+            },
+            {
+              "target": "МестоУстановки",
+              "source": "МестоОтправитель"
+            },
+            {
+              "target": "Ответственный",
+              "source": "НовыйОтветственный"
+            },
+            {
+              "target": "Количество",
+              "source": "1"
+            }
+          ],
+          "check_balance": false
+        },
+        {
+          "register": "МестонахождениеОборудования",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Оборудование",
+              "source": "Оборудование"
+            },
+            {
+              "target": "МестоУстановки",
+              "source": "МестоПолучатель"
+            },
+            {
+              "target": "Ответственный",
+              "source": "НовыйОтветственный"
+            },
+            {
+              "target": "Количество",
+              "source": "1"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "СписаниеОборудования",
+      "synonym": "Списание оборудования",
+      "attributes": [
+        {
+          "name": "Оборудование",
+          "synonym": "Оборудование",
+          "type": "СправочникСсылка.Оборудование",
+          "required": true
+        },
+        {
+          "name": "МестоУстановки",
+          "synonym": "Место установки",
+          "type": "СправочникСсылка.МестаУстановки",
+          "required": true
+        },
+        {
+          "name": "Ответственный",
+          "synonym": "Ответственный",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "МестонахождениеОборудования",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Оборудование",
+              "source": "Оборудование"
+            },
+            {
+              "target": "МестоУстановки",
+              "source": "МестоУстановки"
+            },
+            {
+              "target": "Ответственный",
+              "source": "Ответственный"
+            },
+            {
+              "target": "Количество",
+              "source": "1"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [
+    {
+      "name": "МестонахождениеОборудования",
+      "synonym": "Местонахождение оборудования",
+      "periodicity": "Секунда",
+      "recorder": true,
+      "dimensions": [
+        {
+          "name": "Оборудование",
+          "synonym": "Оборудование",
+          "type": "СправочникСсылка.Оборудование",
+          "required": false
+        },
+        {
+          "name": "МестоУстановки",
+          "synonym": "Место установки",
+          "type": "СправочникСсылка.МестаУстановки",
+          "required": false
+        },
+        {
+          "name": "Ответственный",
+          "synonym": "Ответственный",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Количество",
+          "synonym": "Количество",
+          "type": "Число(10)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "accumulation_registers": [],
+  "reports": [
+    {
+      "name": "ВедомостьОборудования",
+      "synonym": "Ведомость оборудования",
+      "source": "РегистрСведений.МестонахождениеОборудования",
+      "view": "СрезПоследних",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    }
+  ]
+}

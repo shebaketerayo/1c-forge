@@ -1,0 +1,254 @@
+{
+  "name": "УчетСклада",
+  "synonym": "Учёт склада",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "СкладскойУчет",
+      "synonym": "Складской учет",
+      "content": [
+        "Справочник.Номенклатура",
+        "Справочник.Склады",
+        "Документ.ПоступлениеТоваров",
+        "Документ.РасходТоваров",
+        "РегистрНакопления.ОстаткиТоваров",
+        "Отчет.ОстаткиТоваров"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ЕдиницыИзмерения",
+      "synonym": "Единицы измерения",
+      "values": [
+        "шт",
+        "кг",
+        "м"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "Номенклатура",
+      "synonym": "Номенклатура",
+      "hierarchical": true,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "ЕдиницаИзмерения",
+          "synonym": "Единица измерения",
+          "type": "ПеречислениеСсылка.ЕдиницыИзмерения",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Склады",
+      "synonym": "Склады",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ПоступлениеТоваров",
+      "synonym": "Поступление товаров",
+      "attributes": [
+        {
+          "name": "Склад",
+          "synonym": "Склад",
+          "type": "СправочникСсылка.Склады",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Товары",
+          "synonym": "Товары",
+          "attributes": [
+            {
+              "name": "Номенклатура",
+              "synonym": "Номенклатура",
+              "type": "СправочникСсылка.Номенклатура",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(15,3)",
+              "required": true
+            },
+            {
+              "name": "Цена",
+              "synonym": "Цена",
+              "type": "Число(15,2)",
+              "required": false
+            },
+            {
+              "name": "Сумма",
+              "synonym": "Сумма",
+              "type": "Число(15,2)",
+              "required": false
+            }
+          ],
+          "computed": [
+            {
+              "field": "Сумма",
+              "expression": "Количество * Цена"
+            }
+          ]
+        }
+      ],
+      "movements": [
+        {
+          "register": "ОстаткиТоваров",
+          "kind": "Приход",
+          "table": "Товары",
+          "fields": [
+            {
+              "target": "Номенклатура",
+              "source": "Товары.Номенклатура"
+            },
+            {
+              "target": "Склад",
+              "source": "Склад"
+            },
+            {
+              "target": "Количество",
+              "source": "Товары.Количество"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "РасходТоваров",
+      "synonym": "Расход товаров",
+      "attributes": [
+        {
+          "name": "Склад",
+          "synonym": "Склад",
+          "type": "СправочникСсылка.Склады",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Товары",
+          "synonym": "Товары",
+          "attributes": [
+            {
+              "name": "Номенклатура",
+              "synonym": "Номенклатура",
+              "type": "СправочникСсылка.Номенклатура",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(15,3)",
+              "required": true
+            },
+            {
+              "name": "Цена",
+              "synonym": "Цена",
+              "type": "Число(15,2)",
+              "required": false
+            },
+            {
+              "name": "Сумма",
+              "synonym": "Сумма",
+              "type": "Число(15,2)",
+              "required": false
+            }
+          ],
+          "computed": [
+            {
+              "field": "Сумма",
+              "expression": "Количество * Цена"
+            }
+          ]
+        }
+      ],
+      "movements": [
+        {
+          "register": "ОстаткиТоваров",
+          "kind": "Расход",
+          "table": "Товары",
+          "fields": [
+            {
+              "target": "Номенклатура",
+              "source": "Товары.Номенклатура"
+            },
+            {
+              "target": "Склад",
+              "source": "Склад"
+            },
+            {
+              "target": "Количество",
+              "source": "Товары.Количество"
+            }
+          ],
+          "check_balance": true
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [],
+  "accumulation_registers": [
+    {
+      "name": "ОстаткиТоваров",
+      "synonym": "Остатки товаров",
+      "kind": "Остатки",
+      "dimensions": [
+        {
+          "name": "Номенклатура",
+          "synonym": "Номенклатура",
+          "type": "СправочникСсылка.Номенклатура",
+          "required": false
+        },
+        {
+          "name": "Склад",
+          "synonym": "Склад",
+          "type": "СправочникСсылка.Склады",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Количество",
+          "synonym": "Количество",
+          "type": "Число(15,3)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "ОстаткиТоваров",
+      "synonym": "Остатки товаров",
+      "source": "РегистрНакопления.ОстаткиТоваров",
+      "view": "Остатки",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    }
+  ]
+}

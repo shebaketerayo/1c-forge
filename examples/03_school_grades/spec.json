@@ -1,0 +1,218 @@
+{
+  "name": "ЭлектронныйЖурналОценок",
+  "synonym": "Электронный журнал оценок",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "Справочники",
+      "synonym": "Справочники",
+      "content": [
+        "Справочник.Ученики",
+        "Справочник.Классы",
+        "Справочник.Предметы",
+        "Справочник.Учителя"
+      ]
+    },
+    {
+      "name": "УчетУспеваемости",
+      "synonym": "Учет успеваемости",
+      "content": [
+        "Документ.ВыставлениеОценок",
+        "РегистрНакопления.Успеваемость",
+        "Отчет.ЖурналОценок",
+        "Отчет.СреднийБаллУчеников"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "Оценки",
+      "synonym": "Оценки",
+      "values": [
+        "_2",
+        "_3",
+        "_4",
+        "_5"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "Ученики",
+      "synonym": "Ученики",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Классы",
+      "synonym": "Классы",
+      "hierarchical": true,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Предметы",
+      "synonym": "Предметы",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Учителя",
+      "synonym": "Учителя",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ВыставлениеОценок",
+      "synonym": "Выставление оценок",
+      "attributes": [
+        {
+          "name": "Класс",
+          "synonym": "Класс",
+          "type": "СправочникСсылка.Классы",
+          "required": true
+        },
+        {
+          "name": "Предмет",
+          "synonym": "Предмет",
+          "type": "СправочникСсылка.Предметы",
+          "required": true
+        },
+        {
+          "name": "Учитель",
+          "synonym": "Учитель",
+          "type": "СправочникСсылка.Учителя",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Оценки",
+          "synonym": "Оценки",
+          "attributes": [
+            {
+              "name": "Ученик",
+              "synonym": "Ученик",
+              "type": "СправочникСсылка.Ученики",
+              "required": true
+            },
+            {
+              "name": "Оценка",
+              "synonym": "Оценка",
+              "type": "ПеречислениеСсылка.Оценки",
+              "required": true
+            }
+          ],
+          "computed": []
+        }
+      ],
+      "movements": [
+        {
+          "register": "Успеваемость",
+          "kind": null,
+          "table": "Оценки",
+          "fields": [
+            {
+              "target": "Ученик",
+              "source": "Оценки.Ученик"
+            },
+            {
+              "target": "Предмет",
+              "source": "Предмет"
+            },
+            {
+              "target": "СуммаОценок",
+              "source": "Оценки.Оценка"
+            },
+            {
+              "target": "КоличествоОценок",
+              "source": "1"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [],
+  "accumulation_registers": [
+    {
+      "name": "Успеваемость",
+      "synonym": "Успеваемость",
+      "kind": "Обороты",
+      "dimensions": [
+        {
+          "name": "Ученик",
+          "synonym": "Ученик",
+          "type": "СправочникСсылка.Ученики",
+          "required": false
+        },
+        {
+          "name": "Предмет",
+          "synonym": "Предмет",
+          "type": "СправочникСсылка.Предметы",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "СуммаОценок",
+          "synonym": "Сумма оценок",
+          "type": "Число(10,2)",
+          "required": false
+        },
+        {
+          "name": "КоличествоОценок",
+          "synonym": "Количество оценок",
+          "type": "Число(10,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "ЖурналОценок",
+      "synonym": "Журнал оценок",
+      "source": "РегистрНакопления.Успеваемость",
+      "view": "Обороты",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    },
+    {
+      "name": "СреднийБаллУчеников",
+      "synonym": "Средний балл учеников",
+      "source": "РегистрНакопления.Успеваемость",
+      "view": "Обороты",
+      "group_by": [],
+      "measures": [],
+      "query": "SELECT Ученик, Предмет, СуммаОценокОборот / КоличествоОценокОборот AS СреднийБалл FROM РегистрНакопления.Успеваемость.Обороты"
+    }
+  ]
+}

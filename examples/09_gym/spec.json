@@ -1,0 +1,302 @@
+{
+  "name": "ФитнесКлуб",
+  "synonym": "Фитнес-клуб",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "Клиенты",
+      "synonym": "Клиенты",
+      "content": [
+        "Справочник.Клиенты",
+        "Справочник.Тренеры",
+        "РегистрНакопления.ОстаткиЗанятий",
+        "Отчет.ОстаткиЗанятий",
+        "Отчет.ОтчетПоПосещаемости"
+      ]
+    },
+    {
+      "name": "Услуги",
+      "synonym": "Услуги",
+      "content": [
+        "Справочник.ВидыАбонементов",
+        "Документ.ПродажаАбонемента",
+        "Документ.Посещение"
+      ]
+    },
+    {
+      "name": "Аналитика",
+      "synonym": "Аналитика",
+      "content": [
+        "РегистрНакопления.ОстаткиЗанятий",
+        "РегистрНакопления.Посещаемость"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "СтатусыАбонементов",
+      "synonym": "Статусы абонементов",
+      "values": [
+        "Активен",
+        "Истек",
+        "Приостановлен"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "Клиенты",
+      "synonym": "Клиенты",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "КонтактныеДанные",
+          "synonym": "Контактные данные",
+          "type": "Строка(255)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Тренеры",
+      "synonym": "Тренеры",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Специализация",
+          "synonym": "Специализация",
+          "type": "Строка(100)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "ВидыАбонементов",
+      "synonym": "Виды абонементов",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "КоличествоЗанятий",
+          "synonym": "Количество занятий",
+          "type": "Число(10)",
+          "required": true
+        },
+        {
+          "name": "Цена",
+          "synonym": "Цена",
+          "type": "Число(15,2)",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ПродажаАбонемента",
+      "synonym": "Продажа абонемента",
+      "attributes": [
+        {
+          "name": "Клиент",
+          "synonym": "Клиент",
+          "type": "СправочникСсылка.Клиенты",
+          "required": true
+        },
+        {
+          "name": "ВидАбонемента",
+          "synonym": "Вид абонемента",
+          "type": "СправочникСсылка.ВидыАбонементов",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "ОстаткиЗанятий",
+          "kind": "Приход",
+          "table": null,
+          "fields": [
+            {
+              "target": "Клиент",
+              "source": "Клиент"
+            },
+            {
+              "target": "ВидАбонемента",
+              "source": "ВидАбонемента"
+            },
+            {
+              "target": "КоличествоЗанятий",
+              "source": "ВидАбонемента.КоличествоЗанятий"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "Посещение",
+      "synonym": "Посещение",
+      "attributes": [
+        {
+          "name": "Клиент",
+          "synonym": "Клиент",
+          "type": "СправочникСсылка.Клиенты",
+          "required": true
+        },
+        {
+          "name": "Тренер",
+          "synonym": "Тренер",
+          "type": "СправочникСсылка.Тренеры",
+          "required": true
+        },
+        {
+          "name": "ВидАбонемента",
+          "synonym": "Вид абонемента",
+          "type": "СправочникСсылка.ВидыАбонементов",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "ОстаткиЗанятий",
+          "kind": "Расход",
+          "table": null,
+          "fields": [
+            {
+              "target": "Клиент",
+              "source": "Клиент"
+            },
+            {
+              "target": "ВидАбонемента",
+              "source": "ВидАбонемента"
+            },
+            {
+              "target": "КоличествоЗанятий",
+              "source": "1"
+            }
+          ],
+          "check_balance": true
+        },
+        {
+          "register": "Посещаемость",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Клиент",
+              "source": "Клиент"
+            },
+            {
+              "target": "Тренер",
+              "source": "Тренер"
+            },
+            {
+              "target": "КоличествоВизитов",
+              "source": "1"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [],
+  "accumulation_registers": [
+    {
+      "name": "ОстаткиЗанятий",
+      "synonym": "Остатки занятий",
+      "kind": "Остатки",
+      "dimensions": [
+        {
+          "name": "Клиент",
+          "synonym": "Клиент",
+          "type": "СправочникСсылка.Клиенты",
+          "required": false
+        },
+        {
+          "name": "ВидАбонемента",
+          "synonym": "Вид абонемента",
+          "type": "СправочникСсылка.ВидыАбонементов",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "КоличествоЗанятий",
+          "synonym": "Количество занятий",
+          "type": "Число(10)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    },
+    {
+      "name": "Посещаемость",
+      "synonym": "Посещаемость",
+      "kind": "Обороты",
+      "dimensions": [
+        {
+          "name": "Клиент",
+          "synonym": "Клиент",
+          "type": "СправочникСсылка.Клиенты",
+          "required": false
+        },
+        {
+          "name": "Тренер",
+          "synonym": "Тренер",
+          "type": "СправочникСсылка.Тренеры",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "КоличествоВизитов",
+          "synonym": "Количество визитов",
+          "type": "Число(10)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "ОстаткиЗанятий",
+      "synonym": "Остатки занятий",
+      "source": "РегистрНакопления.ОстаткиЗанятий",
+      "view": "Остатки",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    },
+    {
+      "name": "ОтчетПоПосещаемости",
+      "synonym": "Отчет по посещаемости",
+      "source": "РегистрНакопления.Посещаемость",
+      "view": "Обороты",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    }
+  ]
+}

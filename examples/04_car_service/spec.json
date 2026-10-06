@@ -1,0 +1,300 @@
+{
+  "name": "Автосервис",
+  "synonym": "Автосервис",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "Клиенты",
+      "synonym": "Клиенты",
+      "content": [
+        "Справочник.Клиенты",
+        "Справочник.Автомобили",
+        "РегистрНакопления.Выручка"
+      ]
+    },
+    {
+      "name": "УчетРабот",
+      "synonym": "Учет работ",
+      "content": [
+        "Справочник.Услуги",
+        "Справочник.Мастера",
+        "Документ.ЗаказНаряд",
+        "РегистрСведений.ЦеныУслуг"
+      ]
+    },
+    {
+      "name": "Аналитика",
+      "synonym": "Аналитика",
+      "content": [
+        "Отчет.ОтчетПоВыручке"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "СтатусыЗаказов",
+      "synonym": "Статусы заказов",
+      "values": [
+        "Новый",
+        "ВРаботе",
+        "Завершен",
+        "Оплачен"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "Клиенты",
+      "synonym": "Клиенты",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "КонтактныеДанные",
+          "synonym": "Контактные данные",
+          "type": "Строка(255)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Автомобили",
+      "synonym": "Автомобили",
+      "hierarchical": false,
+      "owner": "Клиенты",
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "ГосНомер",
+          "synonym": "Гос номер",
+          "type": "Строка(15)",
+          "required": true
+        },
+        {
+          "name": "Марка",
+          "synonym": "Марка",
+          "type": "Строка(50)",
+          "required": false
+        },
+        {
+          "name": "Модель",
+          "synonym": "Модель",
+          "type": "Строка(50)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Услуги",
+      "synonym": "Услуги",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "ЕдИзм",
+          "synonym": "Ед изм",
+          "type": "Строка(10)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Мастера",
+      "synonym": "Мастера",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Должность",
+          "synonym": "Должность",
+          "type": "Строка(50)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ЗаказНаряд",
+      "synonym": "Заказ наряд",
+      "attributes": [
+        {
+          "name": "Клиент",
+          "synonym": "Клиент",
+          "type": "СправочникСсылка.Клиенты",
+          "required": true
+        },
+        {
+          "name": "Автомобиль",
+          "synonym": "Автомобиль",
+          "type": "СправочникСсылка.Автомобили",
+          "required": true
+        },
+        {
+          "name": "Мастер",
+          "synonym": "Мастер",
+          "type": "СправочникСсылка.Мастера",
+          "required": true
+        },
+        {
+          "name": "Статус",
+          "synonym": "Статус",
+          "type": "ПеречислениеСсылка.СтатусыЗаказов",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Услуги",
+          "synonym": "Услуги",
+          "attributes": [
+            {
+              "name": "Услуга",
+              "synonym": "Услуга",
+              "type": "СправочникСсылка.Услуги",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(10,3)",
+              "required": true
+            },
+            {
+              "name": "Цена",
+              "synonym": "Цена",
+              "type": "Число(15,2)",
+              "required": true
+            },
+            {
+              "name": "Сумма",
+              "synonym": "Сумма",
+              "type": "Число(15,2)",
+              "required": false
+            }
+          ],
+          "computed": [
+            {
+              "field": "Сумма",
+              "expression": "Количество * Цена"
+            }
+          ]
+        }
+      ],
+      "movements": [
+        {
+          "register": "Выручка",
+          "kind": null,
+          "table": "Услуги",
+          "fields": [
+            {
+              "target": "Мастер",
+              "source": "Мастер"
+            },
+            {
+              "target": "Услуга",
+              "source": "Услуги.Услуга"
+            },
+            {
+              "target": "Сумма",
+              "source": "Услуги.Сумма"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [
+        {
+          "event": "ОбработкаПроверкиЗаполнения",
+          "body": "Если Статус = Перечисления.СтатусыЗаказов.Завершен И Услуги.Количество() = 0 Тогда\n\tОтказ = Истина;\nКонецЕсли;"
+        }
+      ],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [
+    {
+      "name": "ЦеныУслуг",
+      "synonym": "Цены услуг",
+      "periodicity": "День",
+      "recorder": false,
+      "dimensions": [
+        {
+          "name": "Услуга",
+          "synonym": "Услуга",
+          "type": "СправочникСсылка.Услуги",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Цена",
+          "synonym": "Цена",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "accumulation_registers": [
+    {
+      "name": "Выручка",
+      "synonym": "Выручка",
+      "kind": "Обороты",
+      "dimensions": [
+        {
+          "name": "Мастер",
+          "synonym": "Мастер",
+          "type": "СправочникСсылка.Мастера",
+          "required": false
+        },
+        {
+          "name": "Услуга",
+          "synonym": "Услуга",
+          "type": "СправочникСсылка.Услуги",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "ОтчетПоВыручке",
+      "synonym": "Отчет по выручке",
+      "source": "РегистрНакопления.Выручка",
+      "view": "Обороты",
+      "group_by": [
+        "Мастер",
+        "Услуга"
+      ],
+      "measures": [],
+      "query": null
+    }
+  ]
+}

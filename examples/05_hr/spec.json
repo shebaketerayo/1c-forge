@@ -1,0 +1,427 @@
+{
+  "name": "КадровыйУчет",
+  "synonym": "Кадровый учёт",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "Кадры",
+      "synonym": "Кадры",
+      "content": [
+        "Справочник.Сотрудники",
+        "Справочник.Подразделения",
+        "Справочник.Должности",
+        "Документ.ПриемНаРаботу",
+        "Документ.КадровыйПеревод",
+        "Документ.Увольнение",
+        "РегистрСведений.КадроваяИстория",
+        "Отчет.ШтатнаяРасстановка"
+      ]
+    },
+    {
+      "name": "Зарплата",
+      "synonym": "Зарплата",
+      "content": [
+        "Документ.НачислениеЗарплаты",
+        "Документ.ВыплатаЗарплаты",
+        "РегистрНакопления.ВзаиморасчетыСПерсоналом"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "СтатусСотрудника",
+      "synonym": "Статус сотрудника",
+      "values": [
+        "Работает",
+        "ВОтпуске",
+        "ВКомандировке",
+        "Уволен"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "Сотрудники",
+      "synonym": "Сотрудники",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "ДатаРождения",
+          "synonym": "Дата рождения",
+          "type": "Дата",
+          "required": false
+        },
+        {
+          "name": "ИНН",
+          "synonym": "ИНН",
+          "type": "Строка(12)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Подразделения",
+      "synonym": "Подразделения",
+      "hierarchical": true,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Должности",
+      "synonym": "Должности",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ПриемНаРаботу",
+      "synonym": "Прием на работу",
+      "attributes": [
+        {
+          "name": "Сотрудник",
+          "synonym": "Сотрудник",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": true
+        },
+        {
+          "name": "Подразделение",
+          "synonym": "Подразделение",
+          "type": "СправочникСсылка.Подразделения",
+          "required": true
+        },
+        {
+          "name": "Должность",
+          "synonym": "Должность",
+          "type": "СправочникСсылка.Должности",
+          "required": true
+        },
+        {
+          "name": "Оклад",
+          "synonym": "Оклад",
+          "type": "Число(15,2)",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "КадроваяИстория",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Сотрудник",
+              "source": "Сотрудник"
+            },
+            {
+              "target": "Должность",
+              "source": "Должность"
+            },
+            {
+              "target": "Подразделение",
+              "source": "Подразделение"
+            },
+            {
+              "target": "Оклад",
+              "source": "Оклад"
+            },
+            {
+              "target": "Статус",
+              "source": "Перечисления.СтатусСотрудника.Работает"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "КадровыйПеревод",
+      "synonym": "Кадровый перевод",
+      "attributes": [
+        {
+          "name": "Сотрудник",
+          "synonym": "Сотрудник",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": true
+        },
+        {
+          "name": "НоваяДолжность",
+          "synonym": "Новая должность",
+          "type": "СправочникСсылка.Должности",
+          "required": false
+        },
+        {
+          "name": "НовоеПодразделение",
+          "synonym": "Новое подразделение",
+          "type": "СправочникСсылка.Подразделения",
+          "required": false
+        },
+        {
+          "name": "НовыйОклад",
+          "synonym": "Новый оклад",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "КадроваяИстория",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Сотрудник",
+              "source": "Сотрудник"
+            },
+            {
+              "target": "Должность",
+              "source": "НоваяДолжность"
+            },
+            {
+              "target": "Подразделение",
+              "source": "НовоеПодразделение"
+            },
+            {
+              "target": "Оклад",
+              "source": "НовыйОклад"
+            },
+            {
+              "target": "Статус",
+              "source": "Перечисления.СтатусСотрудника.Работает"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "Увольнение",
+      "synonym": "Увольнение",
+      "attributes": [
+        {
+          "name": "Сотрудник",
+          "synonym": "Сотрудник",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "КадроваяИстория",
+          "kind": null,
+          "table": null,
+          "fields": [
+            {
+              "target": "Сотрудник",
+              "source": "Сотрудник"
+            },
+            {
+              "target": "Должность",
+              "source": "Перечисления.СтатусСотрудника.Уволен"
+            },
+            {
+              "target": "Подразделение",
+              "source": "Перечисления.СтатусСотрудника.Уволен"
+            },
+            {
+              "target": "Оклад",
+              "source": "0"
+            },
+            {
+              "target": "Статус",
+              "source": "Перечисления.СтатусСотрудника.Уволен"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "НачислениеЗарплаты",
+      "synonym": "Начисление зарплаты",
+      "attributes": [],
+      "tabular_sections": [
+        {
+          "name": "Состав",
+          "synonym": "Состав",
+          "attributes": [
+            {
+              "name": "Сотрудник",
+              "synonym": "Сотрудник",
+              "type": "СправочникСсылка.Сотрудники",
+              "required": true
+            },
+            {
+              "name": "Сумма",
+              "synonym": "Сумма",
+              "type": "Число(15,2)",
+              "required": true
+            }
+          ],
+          "computed": []
+        }
+      ],
+      "movements": [
+        {
+          "register": "ВзаиморасчетыСПерсоналом",
+          "kind": "Приход",
+          "table": "Состав",
+          "fields": [
+            {
+              "target": "Сотрудник",
+              "source": "Состав.Сотрудник"
+            },
+            {
+              "target": "Сумма",
+              "source": "Состав.Сумма"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "ВыплатаЗарплаты",
+      "synonym": "Выплата зарплаты",
+      "attributes": [
+        {
+          "name": "Сотрудник",
+          "synonym": "Сотрудник",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": true
+        },
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "ВзаиморасчетыСПерсоналом",
+          "kind": "Расход",
+          "table": null,
+          "fields": [
+            {
+              "target": "Сотрудник",
+              "source": "Сотрудник"
+            },
+            {
+              "target": "Сумма",
+              "source": "Сумма"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [
+    {
+      "name": "КадроваяИстория",
+      "synonym": "Кадровая история",
+      "periodicity": "День",
+      "recorder": true,
+      "dimensions": [
+        {
+          "name": "Сотрудник",
+          "synonym": "Сотрудник",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Должность",
+          "synonym": "Должность",
+          "type": "СправочникСсылка.Должности",
+          "required": false
+        },
+        {
+          "name": "Подразделение",
+          "synonym": "Подразделение",
+          "type": "СправочникСсылка.Подразделения",
+          "required": false
+        },
+        {
+          "name": "Оклад",
+          "synonym": "Оклад",
+          "type": "Число(15,2)",
+          "required": false
+        },
+        {
+          "name": "Статус",
+          "synonym": "Статус",
+          "type": "ПеречислениеСсылка.СтатусСотрудника",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "accumulation_registers": [
+    {
+      "name": "ВзаиморасчетыСПерсоналом",
+      "synonym": "Взаиморасчеты СПерсоналом",
+      "kind": "Остатки",
+      "dimensions": [
+        {
+          "name": "Сотрудник",
+          "synonym": "Сотрудник",
+          "type": "СправочникСсылка.Сотрудники",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "ШтатнаяРасстановка",
+      "synonym": "Штатная расстановка",
+      "source": "РегистрСведений.КадроваяИстория",
+      "view": "СрезПоследних",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    }
+  ]
+}

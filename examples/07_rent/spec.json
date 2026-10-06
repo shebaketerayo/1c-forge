@@ -1,0 +1,303 @@
+{
+  "name": "УчетАрендыПомещений",
+  "synonym": "Учёт аренды помещений",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "Аренда",
+      "synonym": "Аренда",
+      "content": [
+        "Справочник.ОбъектыАренды",
+        "Справочник.Арендаторы",
+        "Справочник.ДоговорыАренды",
+        "Документ.НачислениеАренды",
+        "Документ.ОплатаАренды",
+        "РегистрСведений.ТарифыАренды",
+        "Отчет.ЗадолженностьАрендаторов",
+        "Отчет.ОборотыВыручки",
+        "РегистрНакопления.Взаиморасчеты",
+        "РегистрНакопления.ВыручкаАренда"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "СтатусыДоговоров",
+      "synonym": "Статусы договоров",
+      "values": [
+        "Действует",
+        "Расторгнут",
+        "Приостановлен"
+      ]
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "ОбъектыАренды",
+      "synonym": "Объекты аренды",
+      "hierarchical": true,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Площадь",
+          "synonym": "Площадь",
+          "type": "Число(15,2)",
+          "required": false
+        },
+        {
+          "name": "Этаж",
+          "synonym": "Этаж",
+          "type": "Число(10)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Арендаторы",
+      "synonym": "Арендаторы",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "ДоговорыАренды",
+      "synonym": "Договоры аренды",
+      "hierarchical": false,
+      "owner": "Арендаторы",
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Статус",
+          "synonym": "Статус",
+          "type": "ПеречислениеСсылка.СтатусыДоговоров",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "НачислениеАренды",
+      "synonym": "Начисление аренды",
+      "attributes": [
+        {
+          "name": "ОбъектАренды",
+          "synonym": "Объект аренды",
+          "type": "СправочникСсылка.ОбъектыАренды",
+          "required": true
+        },
+        {
+          "name": "ДоговорАренды",
+          "synonym": "Договор аренды",
+          "type": "СправочникСсылка.ДоговорыАренды",
+          "required": true
+        },
+        {
+          "name": "Арендатор",
+          "synonym": "Арендатор",
+          "type": "СправочникСсылка.Арендаторы",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Начисления",
+          "synonym": "Начисления",
+          "attributes": [
+            {
+              "name": "ОбъектАренды",
+              "synonym": "Объект аренды",
+              "type": "СправочникСсылка.ОбъектыАренды",
+              "required": true
+            },
+            {
+              "name": "Сумма",
+              "synonym": "Сумма",
+              "type": "Число(15,2)",
+              "required": true
+            }
+          ],
+          "computed": []
+        }
+      ],
+      "movements": [
+        {
+          "register": "Взаиморасчеты",
+          "kind": "Приход",
+          "table": "Начисления",
+          "fields": [
+            {
+              "target": "Арендатор",
+              "source": "Арендатор"
+            },
+            {
+              "target": "Сумма",
+              "source": "Начисления.Сумма"
+            }
+          ],
+          "check_balance": false
+        },
+        {
+          "register": "ВыручкаАренда",
+          "kind": null,
+          "table": "Начисления",
+          "fields": [
+            {
+              "target": "Арендатор",
+              "source": "Арендатор"
+            },
+            {
+              "target": "Сумма",
+              "source": "Начисления.Сумма"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "ОплатаАренды",
+      "synonym": "Оплата аренды",
+      "attributes": [
+        {
+          "name": "Арендатор",
+          "synonym": "Арендатор",
+          "type": "СправочникСсылка.Арендаторы",
+          "required": true
+        },
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": true
+        }
+      ],
+      "tabular_sections": [],
+      "movements": [
+        {
+          "register": "Взаиморасчеты",
+          "kind": "Расход",
+          "table": null,
+          "fields": [
+            {
+              "target": "Арендатор",
+              "source": "Арендатор"
+            },
+            {
+              "target": "Сумма",
+              "source": "Сумма"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [
+    {
+      "name": "ТарифыАренды",
+      "synonym": "Тарифы аренды",
+      "periodicity": "День",
+      "recorder": false,
+      "dimensions": [
+        {
+          "name": "ОбъектАренды",
+          "synonym": "Объект аренды",
+          "type": "СправочникСсылка.ОбъектыАренды",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Ставка",
+          "synonym": "Ставка",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "accumulation_registers": [
+    {
+      "name": "Взаиморасчеты",
+      "synonym": "Взаиморасчеты",
+      "kind": "Остатки",
+      "dimensions": [
+        {
+          "name": "Арендатор",
+          "synonym": "Арендатор",
+          "type": "СправочникСсылка.Арендаторы",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    },
+    {
+      "name": "ВыручкаАренда",
+      "synonym": "Выручка аренда",
+      "kind": "Обороты",
+      "dimensions": [
+        {
+          "name": "Арендатор",
+          "synonym": "Арендатор",
+          "type": "СправочникСсылка.Арендаторы",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Сумма",
+          "synonym": "Сумма",
+          "type": "Число(15,2)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "ЗадолженностьАрендаторов",
+      "synonym": "Задолженность арендаторов",
+      "source": "РегистрНакопления.Взаиморасчеты",
+      "view": "Остатки",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    },
+    {
+      "name": "ОборотыВыручки",
+      "synonym": "Обороты выручки",
+      "source": "РегистрНакопления.ВыручкаАренда",
+      "view": "Обороты",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    }
+  ]
+}

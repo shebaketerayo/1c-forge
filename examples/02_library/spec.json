@@ -1,0 +1,235 @@
+{
+  "name": "УчетБиблиотеки",
+  "synonym": "Учёт библиотеки",
+  "version": "1.0.0",
+  "subsystems": [
+    {
+      "name": "Библиотека",
+      "synonym": "Библиотека",
+      "content": [
+        "Справочник.Книги",
+        "Справочник.Читатели",
+        "Документ.ВыдачаКниг",
+        "Документ.ВозвратКниг",
+        "РегистрНакопления.ОстаткиКнигНаРуках",
+        "Отчет.КнигиНаРуках"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [],
+  "catalogs": [
+    {
+      "name": "Книги",
+      "synonym": "Книги",
+      "hierarchical": true,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "Автор",
+          "synonym": "Автор",
+          "type": "Строка(150)",
+          "required": false
+        },
+        {
+          "name": "ГодИздания",
+          "synonym": "Год издания",
+          "type": "Число(4)",
+          "required": false
+        },
+        {
+          "name": "ISBN",
+          "synonym": "ISBN",
+          "type": "Строка(20)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    },
+    {
+      "name": "Читатели",
+      "synonym": "Читатели",
+      "hierarchical": false,
+      "owner": null,
+      "code_length": 9,
+      "description_length": 100,
+      "attributes": [
+        {
+          "name": "ФИО",
+          "synonym": "ФИО",
+          "type": "Строка(150)",
+          "required": true
+        },
+        {
+          "name": "КонтактныеДанные",
+          "synonym": "Контактные данные",
+          "type": "Строка(255)",
+          "required": false
+        }
+      ],
+      "tabular_sections": [],
+      "handlers": []
+    }
+  ],
+  "documents": [
+    {
+      "name": "ВыдачаКниг",
+      "synonym": "Выдача книг",
+      "attributes": [
+        {
+          "name": "Читатель",
+          "synonym": "Читатель",
+          "type": "СправочникСсылка.Читатели",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Книги",
+          "synonym": "Книги",
+          "attributes": [
+            {
+              "name": "Книга",
+              "synonym": "Книга",
+              "type": "СправочникСсылка.Книги",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(10)",
+              "required": true
+            }
+          ],
+          "computed": []
+        }
+      ],
+      "movements": [
+        {
+          "register": "ОстаткиКнигНаРуках",
+          "kind": "Расход",
+          "table": "Книги",
+          "fields": [
+            {
+              "target": "Книга",
+              "source": "Книги.Книга"
+            },
+            {
+              "target": "Читатель",
+              "source": "Читатель"
+            },
+            {
+              "target": "Количество",
+              "source": "Книги.Количество"
+            }
+          ],
+          "check_balance": true
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    },
+    {
+      "name": "ВозвратКниг",
+      "synonym": "Возврат книг",
+      "attributes": [
+        {
+          "name": "Читатель",
+          "synonym": "Читатель",
+          "type": "СправочникСсылка.Читатели",
+          "required": true
+        }
+      ],
+      "tabular_sections": [
+        {
+          "name": "Книги",
+          "synonym": "Книги",
+          "attributes": [
+            {
+              "name": "Книга",
+              "synonym": "Книга",
+              "type": "СправочникСсылка.Книги",
+              "required": true
+            },
+            {
+              "name": "Количество",
+              "synonym": "Количество",
+              "type": "Число(10)",
+              "required": true
+            }
+          ],
+          "computed": []
+        }
+      ],
+      "movements": [
+        {
+          "register": "ОстаткиКнигНаРуках",
+          "kind": "Приход",
+          "table": "Книги",
+          "fields": [
+            {
+              "target": "Книга",
+              "source": "Книги.Книга"
+            },
+            {
+              "target": "Читатель",
+              "source": "Читатель"
+            },
+            {
+              "target": "Количество",
+              "source": "Книги.Количество"
+            }
+          ],
+          "check_balance": false
+        }
+      ],
+      "handlers": [],
+      "number_length": 11
+    }
+  ],
+  "information_registers": [],
+  "accumulation_registers": [
+    {
+      "name": "ОстаткиКнигНаРуках",
+      "synonym": "Остатки книг на руках",
+      "kind": "Остатки",
+      "dimensions": [
+        {
+          "name": "Книга",
+          "synonym": "Книга",
+          "type": "СправочникСсылка.Книги",
+          "required": false
+        },
+        {
+          "name": "Читатель",
+          "synonym": "Читатель",
+          "type": "СправочникСсылка.Читатели",
+          "required": false
+        }
+      ],
+      "resources": [
+        {
+          "name": "Количество",
+          "synonym": "Количество",
+          "type": "Число(10)",
+          "required": false
+        }
+      ],
+      "attributes": []
+    }
+  ],
+  "reports": [
+    {
+      "name": "КнигиНаРуках",
+      "synonym": "Книги на руках",
+      "source": "РегистрНакопления.ОстаткиКнигНаРуках",
+      "view": "Остатки",
+      "group_by": [],
+      "measures": [],
+      "query": null
+    }
+  ]
+}
